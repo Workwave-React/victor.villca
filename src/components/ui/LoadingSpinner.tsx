@@ -1,8 +1,21 @@
+import { Box, CircularProgress, Typography } from '@mui/material';
+
 export function LoadingSpinner() {
   return (
-    <div className="loading-container">
-      <div className="spinner"></div>
-      <p className="loading-text">Loading...</p>
-    </div>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 4,
+        gap: 2,
+      }}
+    >
+      <CircularProgress size={60} />
+      <Typography variant="body1" color="text.secondary">
+        Loading...
+      </Typography>
+    </Box>
   );
 }

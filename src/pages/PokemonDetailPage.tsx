@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { usePokemon } from '../hooks/usePokemon';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
@@ -9,28 +10,32 @@ export function PokemonDetailPage() {
   const { pokemon, loading, error, refetch } = usePokemon(name);
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
+        <LoadingSpinner />
+      </Box>
+    );
   }
 
   if (error) {
     return (
-      <div className="page">
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
         <ErrorMessage message={error} onRetry={refetch} />
-      </div>
+      </Box>
     );
   }
 
   if (!pokemon) {
     return (
-      <div className="page">
+      <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
         <ErrorMessage message="No pokemon data found" />
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div className="page detail-page">
+    <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
       <PokemonDetail pokemon={pokemon} />
-    </div>
+    </Box>
   );
 }

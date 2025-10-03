@@ -1,3 +1,5 @@
+import { Box, Alert, Button, AlertTitle } from '@mui/material';
+
 interface ErrorMessageProps {
   message: string;
   onRetry?: () => void;
@@ -5,14 +7,20 @@ interface ErrorMessageProps {
 
 export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
   return (
-    <div className="error-container">
-      <div className="error-icon">⚠️</div>
-      <p className="error-text">{message}</p>
-      {onRetry && (
-        <button className="retry-button" onClick={onRetry}>
-          Try Again
-        </button>
-      )}
-    </div>
+    <Box sx={{ padding: 2 }}>
+      <Alert 
+        severity="error"
+        action={
+          onRetry && (
+            <Button color="inherit" size="small" onClick={onRetry}>
+              Retry
+            </Button>
+          )
+        }
+      >
+        <AlertTitle>Error</AlertTitle>
+        {message}
+      </Alert>
+    </Box>
   );
 }

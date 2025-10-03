@@ -1,3 +1,5 @@
+import Container from '@mui/material/Container';
+import { Grid } from '@mui/system';
 import { usePokemonList } from '../../hooks/usePokemonList';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
@@ -20,14 +22,14 @@ export function PokemonList() {
   }
 
   return (
-    <div className="pokemon-list">
-      {pokemons.map((pokemon) => (
-        <PokemonCard 
-          key={pokemon.name} 
-          name={pokemon.name} 
-          url={pokemon.url} 
-        />
-      ))}
-    </div>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Grid container spacing={3}>
+        {pokemons.map((pokemon) => (
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={pokemon.name}>
+            <PokemonCard name={pokemon.name} url={pokemon.url} />
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
 }
