@@ -1,5 +1,10 @@
-import { Card, CardContent, CardMedia, Typography, CardActionArea } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, CardActionArea, Box, Button } from '@mui/material';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import { useModal } from '../../hooks/useModal';
+import { ImageModal } from '../ui/ImageModal';
+
 
 interface PokemonCardProps {
   name: string;
@@ -10,13 +15,22 @@ export function PokemonCard({ name, url }: PokemonCardProps) {
   const navigate = useNavigate();
   
   const pokemonId = url.split('/').filter(Boolean).pop();
+  const { isOpen, modalData, openModal, closeModal } = useModal();
+  
   const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
 
   const handleClick = () => {
     navigate(`/pokemon/${name}`);
   };
+  const hanldeButtonClick = () => {
+    openModal({
+      imageUrl,
+      title: name.charAt(0).toUpperCase() + name.slice(1),
+    });
+  };
 
   return (
+    <>
     <Card 
       sx={{ 
         height: '100%',
@@ -29,7 +43,7 @@ export function PokemonCard({ name, url }: PokemonCardProps) {
         }
       }}
     >
-      <CardActionArea onClick={handleClick} sx={{ flexGrow: 1 }}>
+      <CardActionArea sx={{ flexGrow: 1 }}>
         <CardMedia
           component="img"
           image={imageUrl}
@@ -41,6 +55,8 @@ export function PokemonCard({ name, url }: PokemonCardProps) {
             backgroundColor: '#f5f5f5'
           }}
           loading="lazy"
+
+          
         />
         <CardContent>
           <Typography 
@@ -54,8 +70,19 @@ export function PokemonCard({ name, url }: PokemonCardProps) {
           >
             {name}
           </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
+            <Button variant="contained" onClick={hanldeButtonClick}>Extend</Button>
+            <Button variant="contained" onClick={handleClick}>See more</Button>
+          </Box>
+
         </CardContent>
       </CardActionArea>
     </Card>
+        <ImageModal
+            open={isOpen}
+            onClose={closeModal}
+            data={modalData}
+          />
+          </>
   );
 }

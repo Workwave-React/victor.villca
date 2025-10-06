@@ -12,6 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import type { PokemonDetail as PokemonDetailType } from '../../types/pokemon.types';
 import { getTypeColor } from '../../utils/pokemonTypeColors';
+import { useModal } from '../../hooks/useModal';
+import { PokemonImageGallery } from './PokemonImageGallery';
+import { ImageModal } from '../ui/ImageModal';
 
 interface PokemonDetailProps {
   pokemon: PokemonDetailType;
@@ -19,8 +22,14 @@ interface PokemonDetailProps {
 
 export function PokemonDetail({ pokemon }: PokemonDetailProps) {
   const navigate = useNavigate();
+  const { isOpen, modalData, openModal, closeModal } = useModal();
   const capitalizedName = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
-
+  const handleImageClick = (imageUrl: string, title: string) => {
+    openModal({
+      imageUrl,
+      title,
+    });
+  };
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Button
@@ -42,35 +51,11 @@ export function PokemonDetail({ pokemon }: PokemonDetailProps) {
             </Typography>
           </Box>
         </Box>
-
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            gap: 2,
-            mb: 4,
-            p: 3,
-            backgroundColor: 'grey.100',
-            borderRadius: 2
-          }}
-        >
-          {pokemon.sprites.front_default && (
-            <Box
-              component="img"
-              src={pokemon.sprites.front_default}
-              alt={`${pokemon.name} front`}
-              sx={{ width: 150, height: 150, imageRendering: 'pixelated' }}
-            />
-          )}
-          {pokemon.sprites.back_default && (
-            <Box
-              component="img"
-              src={pokemon.sprites.back_default}
-              alt={`${pokemon.name} back`}
-              sx={{ width: 150, height: 150, imageRendering: 'pixelated' }}
-            />
-          )}
-        </Box>
+        <PokemonImageGallery
+          sprites={pokemon.sprites}
+          pokemonName={pokemon.name}
+          onImageClick={handleImageClick}
+        />
 
         <Box sx={{ mb: 4 }}>
           <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
@@ -191,6 +176,11 @@ export function PokemonDetail({ pokemon }: PokemonDetailProps) {
           </Box>
         </Box>
       </Paper>
+    <ImageModal
+        open={isOpen}
+        onClose={closeModal}
+        data={modalData}
+      />
     </Container>
   );
 }
