@@ -46,3 +46,4 @@ export interface PokemonDetail {
   abilities: PokemonAbility[];
   stats: PokemonStat[];
 }
+

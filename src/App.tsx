@@ -2,9 +2,9 @@ import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { HomePage } from './pages/HomePage';
 import { PokemonDetailPage } from './pages/PokemonDetailPage';
-import { theme } from '../theme';
+import { theme } from './theme';
 
-function AppV1() {
+function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -16,4 +16,4 @@ function AppV1() {
   );
 }
 
-export default AppV1;
+export default App;
