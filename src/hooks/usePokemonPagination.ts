@@ -4,7 +4,6 @@ import { GENERATIONS } from '../constants/filter.constants';
 import type { Pokemon } from '../types/pokemon.types';
 import type { PokemonFilters } from '../constants/filter.types';
 
-
 interface PokemonListResponse {
   count: number;
   next: string | null;

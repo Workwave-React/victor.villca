@@ -1,4 +1,3 @@
-// src/components/pokemon/PokemonList.tsx (minor update)
 import { Box, Grid } from '@mui/system';
 import Container from '@mui/material/Container';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
