@@ -2,28 +2,24 @@ import { Box, Grid } from '@mui/system';
 
 
 import Container from '@mui/material/Container';
-
-import { usePokemonList } from '../../hooks/usePokemonList';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { PokemonCard } from './PokemonCard';
-import { DEFAULT_POKEMON_LIMIT } from '../../constants/api.constants';
-import { useState } from 'react';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import { usePokemonPagination } from '../../hooks/usePokemonPagination';
 
 interface PokemonListProps {
   limit?: number;
 }
 export function PokemonList({ limit }: PokemonListProps) {
-    const [visibleCount, setVisibleCount] = useState(limit);
-  const { pokemons, loading, error, refetch } = usePokemonList(limit || DEFAULT_POKEMON_LIMIT);
+    const { pokemons, loading, error, currentPage, totalPages, fetchPage } = usePokemonPagination(limit);
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
   if (error) {
-    return <ErrorMessage message={error} onRetry={refetch} />;
+    return <ErrorMessage message={error} />;
   }
 
   if (pokemons.length === 0) {
@@ -39,6 +35,26 @@ export function PokemonList({ limit }: PokemonListProps) {
           </Grid>
         ))}
       </Grid>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 4 }}>
+        <Button 
+          variant="outlined" 
+          disabled={currentPage === 1} 
+          onClick={() => fetchPage(currentPage - 1)}
+        >
+          Previous
+        </Button>
+        <Typography>
+          Page {currentPage} of {totalPages}
+        </Typography>
+        <Button 
+          variant="outlined" 
+          disabled={currentPage === totalPages} 
+          onClick={() => fetchPage(currentPage + 1)}
+        >
+          Next
+        </Button>
+      </Box>
     </Container>
   );
 }

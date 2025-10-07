@@ -4,10 +4,16 @@ import { useState } from 'react';
 import { DEFAULT_POKEMON_LIMIT } from '../constants/api.constants';
 import { LimitInput } from '../components/ui/LimitInput';
 
-
 export function HomePage() {
   const [pokemonLimit, setPokemonLimit] = useState<number>(DEFAULT_POKEMON_LIMIT);
   const [showDevOptions, setShowDevOptions] = useState<boolean>(false);
+  const handleDevOptionsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+    setShowDevOptions(checked);
+    if (!checked) {
+      setPokemonLimit(DEFAULT_POKEMON_LIMIT);
+    }
+  };
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
       <Container maxWidth="lg">
@@ -29,7 +35,7 @@ export function HomePage() {
             control={
               <Checkbox
                 checked={showDevOptions}
-                onChange={(e) => setShowDevOptions(e.target.checked)}
+                onChange={handleDevOptionsChange}
               />
             }
             label="Developer Options"
@@ -38,13 +44,13 @@ export function HomePage() {
 
           {showDevOptions && (
             <LimitInput
-              defaultValue={DEFAULT_POKEMON_LIMIT}
+              defaultValue={pokemonLimit}
               onLimitChange={setPokemonLimit}
             />
           )}
         </Box>
       </Container>
-      <PokemonList limit ={pokemonLimit} />
+      <PokemonList limit={pokemonLimit} />
     </Box>
   );
 }
