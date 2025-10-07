@@ -3,16 +3,25 @@ import { PokemonList } from '../components/pokemon/PokemonList';
 import { useState } from 'react';
 import { DEFAULT_POKEMON_LIMIT } from '../constants/api.constants';
 import { LimitInput } from '../components/ui/LimitInput';
+import { SearchBar } from '../components/ui/SearchBar';
 
 export function HomePage() {
   const [pokemonLimit, setPokemonLimit] = useState<number>(DEFAULT_POKEMON_LIMIT);
   const [showDevOptions, setShowDevOptions] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const handleDevOptionsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setShowDevOptions(checked);
     if (!checked) {
       setPokemonLimit(DEFAULT_POKEMON_LIMIT);
     }
+  };
+  const handleSearchChange = (query: string) => { 
+    setSearchQuery(query); 
+  }; 
+ 
+  const handleSearchClear = () => { 
+    setSearchQuery(''); 
   };
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
@@ -31,6 +40,20 @@ export function HomePage() {
           >
             Pokédex
           </Typography>
+          <Typography  
+            variant="body1"  
+            color="text.secondary"  
+            sx={{ mb: 4, maxWidth: 600, mx: 'auto' }} 
+          > 
+            Search and explore your favorite Pokémon from all generations 
+          </Typography>
+          <SearchBar  
+            value={searchQuery} 
+            onChange={handleSearchChange} 
+            onClear={handleSearchClear} 
+            placeholder="Search by name or ID (e.g., pikachu, 25)..." 
+          />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -50,7 +73,7 @@ export function HomePage() {
           )}
         </Box>
       </Container>
-      <PokemonList limit={pokemonLimit} />
+      <PokemonList limit={pokemonLimit} searchQuery={searchQuery}/>
     </Box>
   );
 }
