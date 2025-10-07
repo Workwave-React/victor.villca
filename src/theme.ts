@@ -12,7 +12,7 @@ export const theme = createTheme({
     },
     background: {
       default: 'transparent',
-      paper: 'rgba(255, 255, 255, 0.2)',
+      paper: 'rgba(255, 255, 255, 0.5)',
     },
   },
   typography: {

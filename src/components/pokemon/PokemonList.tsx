@@ -68,23 +68,64 @@ export function PokemonList({ limit, searchQuery = '', filters }: PokemonListPro
           </Grid>
         ))}
       </Grid>
-
       {totalPages > 1 && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 2, mt: 4 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+            mt: 4,
+            p: 2,
+            borderRadius: 2,
+            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+            backdropFilter: 'blur(6px)',
+          }}
+        >
           <Button
-            variant="outlined"
+            variant="contained"
+            color="primary"
             disabled={currentPage === 1}
             onClick={() => fetchPage(currentPage - 1)}
+            sx={{
+              color: 'white',
+              backgroundColor: '#1976d2',
+              '&:hover': { backgroundColor: '#1565c0' },
+              '&.Mui-disabled': {
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+              },
+            }}
           >
             Previous
           </Button>
-          <Typography variant="body2" sx={{ minWidth: 120, textAlign: 'center' }}>
+
+          <Typography
+            variant="body2"
+            sx={{
+              minWidth: 120,
+              textAlign: 'center',
+              color: 'white',
+              fontWeight: 600,
+            }}
+          >
             Page {currentPage} of {totalPages}
           </Typography>
+
           <Button
-            variant="outlined"
+            variant="contained"
+            color="primary"
             disabled={currentPage === totalPages}
             onClick={() => fetchPage(currentPage + 1)}
+            sx={{
+              color: 'white',
+              backgroundColor: '#1976d2',
+              '&:hover': { backgroundColor: '#1565c0' },
+              '&.Mui-disabled': {
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: 'white',
+              },
+            }}
           >
             Next
           </Button>
