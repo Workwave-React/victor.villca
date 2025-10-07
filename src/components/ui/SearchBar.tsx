@@ -2,6 +2,8 @@ import { TextField, InputAdornment, IconButton, Box, Chip, Typography } from '@m
 import SearchIcon from '@mui/icons-material/Search'; 
 import ClearIcon from '@mui/icons-material/Clear'; 
 import { useState, useEffect } from 'react';
+import popularSearches from '../../db/popularSearches.json';
+
 
 interface SearchBarProps { 
   value: string; 
@@ -14,12 +16,10 @@ export function SearchBar({ value, onChange, onClear, placeholder = 'Search...' 
   const [localValue, setLocalValue] = useState(value); 
   const [showSuggestions, setShowSuggestions] = useState(false); 
  
-  // Debounce search input 
   useEffect(() => { 
     const timer = setTimeout(() => { 
       onChange(localValue); 
     }, 300); 
- 
     return () => clearTimeout(timer); 
   }, [localValue, onChange]); 
  
@@ -28,8 +28,6 @@ export function SearchBar({ value, onChange, onClear, placeholder = 'Search...' 
     onClear(); 
     setShowSuggestions(false); 
   }; 
- 
-  const popularSearches = ['pikachu', 'charizard', 'mewtwo', 'eevee', 'lucario']; 
  
   return ( 
     <Box sx={{ maxWidth: 600, mx: 'auto', mb: 3 }}> 
@@ -59,18 +57,6 @@ export function SearchBar({ value, onChange, onClear, placeholder = 'Search...' 
               </IconButton> 
             </InputAdornment> 
           ), 
-        }} 
-        sx={{ 
-          '& .MuiOutlinedInput-root': { 
-            backgroundColor: 'background.paper', 
-            transition: 'all 0.3s ease', 
-            '&:hover': { 
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)', 
-            },
-            '&.Mui-focused': { 
-              boxShadow: '0 4px 16px rgba(25,118,210,0.2)', 
-            }, 
-          }, 
         }} 
       /> 
  
