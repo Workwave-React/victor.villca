@@ -1,35 +1,13 @@
-import { Container, Typography, Box, TextField } from '@mui/material';
+import { Container, Typography, Box, TextField, FormControlLabel, Checkbox } from '@mui/material';
 import { PokemonList } from '../components/pokemon/PokemonList';
 import { useState } from 'react';
 import { DEFAULT_POKEMON_LIMIT } from '../constants/api.constants';
-import debounce from 'lodash.debounce';
+import { LimitInput } from '../components/ui/LimitInput';
 
 
 export function HomePage() {
-  const [inputValue, setInputValue] = useState<string>(DEFAULT_POKEMON_LIMIT.toString());
   const [pokemonLimit, setPokemonLimit] = useState<number>(DEFAULT_POKEMON_LIMIT);
-    const [errorText, setErrorText] = useState<string | null>(null);
-    // debounce here delays the exuction of the sepokemonlimit so  that we do 
-    // do not make fetch each time the user types
-  const updateLimit = debounce((value: number) => {
-    setPokemonLimit(value);
-  }, 500);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-
-    if (!/^\d*$/.test(value)) return;
-
-    setInputValue(value);
-
-    const numberValue = Number(value);
-    if (numberValue < 1 || numberValue > 1000) {
-      setErrorText('Please enter a number between 1 and 100.');
-    } else {
-      setErrorText(null);
-      updateLimit(numberValue);
-    }
-  };
+  const [showDevOptions, setShowDevOptions] = useState<boolean>(false);
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
       <Container maxWidth="lg">
@@ -47,19 +25,23 @@ export function HomePage() {
           >
             Pokédex
           </Typography>
-          <Typography variant="h6" color="text.secondary">
-            Enter how many Pokémon you want to see
-          </Typography>
-          <TextField
-            label="Pokémon Limit"
-            variant="outlined"
-            margin="normal"
-            value={inputValue}
-            onChange={handleChange}
-            helperText={errorText || 'Between 1 and 100'}
-            error={Boolean(errorText)}
-            
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showDevOptions}
+                onChange={(e) => setShowDevOptions(e.target.checked)}
+              />
+            }
+            label="Developer Options"
+            sx={{ mt: 2 }}
           />
+
+          {showDevOptions && (
+            <LimitInput
+              defaultValue={DEFAULT_POKEMON_LIMIT}
+              onLimitChange={setPokemonLimit}
+            />
+          )}
         </Box>
       </Container>
       <PokemonList limit ={pokemonLimit} />
