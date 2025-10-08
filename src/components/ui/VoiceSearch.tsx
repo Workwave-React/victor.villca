@@ -1,57 +1,114 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography, Chip } from "@mui/material";
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
 
 interface VoiceSearchProps {
   onVoiceSearch: (term: string) => void;
 }
 
+
 export const VoiceSearch: React.FC<VoiceSearchProps> = ({ onVoiceSearch }) => {
-  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } =
-    useSpeechRecognition();
+  const { 
+    transcript, 
+    listening, 
+    resetTranscript, 
+    browserSupportsSpeechRecognition 
+  } = useSpeechRecognition();
+
+  useEffect(() => {
+    if (!listening && transcript.trim()) {
+      const timer = setTimeout(() => {
+        onVoiceSearch(transcript.trim());
+        resetTranscript();
+      }, 1500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [listening, transcript, onVoiceSearch, resetTranscript]);
 
   if (!browserSupportsSpeechRecognition) {
-    return <Typography>Browser doesn’t support speech recognition.</Typography>;
+    return (
+      <Tooltip title="Speech recognition is not supported in your browser">
+        <Box sx={{ display: 'inline-flex' }}>
+          <IconButton disabled>
+            <MicOffIcon />
+          </IconButton>
+        </Box>
+      </Tooltip>
+    );
   }
 
-  const handleSearch = () => {
-    if (transcript.trim()) {
-      onVoiceSearch(transcript.trim());
+  const handleToggleListening = () => {
+    if (listening) {
+      SpeechRecognition.stopListening();
+    } else {
       resetTranscript();
+      SpeechRecognition.startListening({ continuous: false, language: 'en-US' });
     }
   };
 
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
+        display: "inline-flex",
         alignItems: "center",
-        gap: 2,
-        mb: 4,
+        gap: 1,
       }}
     >
-      <Typography variant="body1">🎤 Microphone: {listening ? "On" : "Off"}</Typography>
-      <Box sx={{ display: "flex", gap: 1 }}>
-        <Button
-          variant="contained"
-          onClick={() => SpeechRecognition.startListening()}
+      <Tooltip title={listening ? "Stop listening" : "Start voice search"}>
+        <IconButton
+          onClick={handleToggleListening}
+          sx={{
+            color: listening ? 'error.main' : 'action.active',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              backgroundColor: listening ? 'error.light' : 'action.hover',
+            },
+          }}
         >
-          Start
-        </Button>
-        <Button variant="contained" color="secondary" onClick={SpeechRecognition.stopListening}>
-          Stop
-        </Button>
-        <Button variant="outlined" onClick={resetTranscript}>
-          Reset
-        </Button>
-        <Button variant="contained" disabled={!transcript} onClick={handleSearch}>
-          Search
-        </Button>
-      </Box>
+          {listening ? <MicIcon /> : <MicIcon />}
+        </IconButton>
+      </Tooltip>
+
       {transcript && (
-        <Typography variant="body2" color="text.secondary">
-          Transcript: {transcript}
+        <Chip
+          label={transcript}
+          size="small"
+          onDelete={resetTranscript}
+          sx={{
+            maxWidth: 200,
+            '& .MuiChip-label': {
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            },
+          }}
+        />
+      )}
+
+      {listening && (
+        <Typography
+          variant="caption"
+          color="error"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 0.5,
+            fontWeight: 600,
+          }}
+        >
+          <Box
+            component="span"
+            sx={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              backgroundColor: 'error.main',
+            }}
+          />
+          Listening...
         </Typography>
       )}
     </Box>

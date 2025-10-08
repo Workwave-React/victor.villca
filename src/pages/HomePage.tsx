@@ -1,4 +1,3 @@
-// src/pages/HomePage.tsx
 import { Container, Typography, Box, FormControlLabel, Checkbox } from '@mui/material';
 import { Grid } from '@mui/system';
 import { PokemonList } from '../components/pokemon/PokemonList';
@@ -62,7 +61,18 @@ export function HomePage() {
             color="text.secondary"
             sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}
           >
-            Search and explore your favorite Pokémon from all generations
+            Search and explore your favorite Pokémon from all generations.
+            <Box
+              component="span"
+              sx={{
+                display: 'block',
+                mt: 1,
+                fontSize: '0.875rem',
+                fontStyle: 'italic',
+              }}
+            >
+            Click the microphone icon to search by voice!
+            </Box>
           </Typography>
           <SearchBar
             value={searchQuery}

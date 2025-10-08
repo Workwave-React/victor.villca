@@ -1,4 +1,3 @@
-// src/components/pokemon/FilterPanel.tsx
 import {
   Box,
   Paper,

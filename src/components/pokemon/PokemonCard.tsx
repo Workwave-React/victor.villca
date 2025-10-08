@@ -1,7 +1,5 @@
 import { Card, CardContent, CardMedia, Typography, CardActionArea, Box, Button } from '@mui/material';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import { useModal } from '../../hooks/useModal';
 import { ImageModal } from '../ui/ImageModal';
 
@@ -43,7 +41,7 @@ export function PokemonCard({ name, url }: PokemonCardProps) {
         }
       }}
     >
-      <CardActionArea sx={{ flexGrow: 1 }}>
+      <CardActionArea component="div" sx={{ flexGrow: 1 }}>
         <CardMedia
           component="img"
           image={imageUrl}

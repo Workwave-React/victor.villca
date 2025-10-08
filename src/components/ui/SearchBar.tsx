@@ -3,6 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear'; 
 import { useState, useEffect } from 'react';
 import popularSearches from '../../db/popularSearches.json';
+import { VoiceSearch } from './VoiceSearch';
 
 
 interface SearchBarProps { 
@@ -27,7 +28,12 @@ export function SearchBar({ value, onChange, onClear, placeholder = 'Search...' 
     setLocalValue(''); 
     onClear(); 
     setShowSuggestions(false); 
-  }; 
+  };
+  const handleVoiceSearch = (transcript: string) => {
+    setLocalValue(transcript.slice(0, -1));
+    onChange(transcript);
+    setShowSuggestions(false);
+  };
  
   return ( 
     <Box sx={{ maxWidth: 600, mx: 'auto', mb: 3 }}> 
@@ -45,17 +51,20 @@ export function SearchBar({ value, onChange, onClear, placeholder = 'Search...' 
               <SearchIcon color="action" /> 
             </InputAdornment> 
           ), 
-          endAdornment: localValue && ( 
-            <InputAdornment position="end"> 
-              <IconButton  
-                onClick={handleClear} 
-                edge="end" 
-                size="small" 
-                aria-label="clear search" 
-              > 
-                <ClearIcon /> 
-              </IconButton> 
-            </InputAdornment> 
+          endAdornment: ( 
+            <InputAdornment position="end">
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <VoiceSearch onVoiceSearch={handleVoiceSearch} />
+                <IconButton  
+                  onClick={handleClear} 
+                  edge="end" 
+                  size="small" 
+                  aria-label="clear search" 
+                > 
+                  <ClearIcon /> 
+                </IconButton>
+              </Box>
+            </InputAdornment>
           ), 
         }} 
       /> 
