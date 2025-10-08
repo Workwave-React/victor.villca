@@ -22,7 +22,6 @@ export function PokemonList({ limit, searchQuery = '', filters }: PokemonListPro
     totalPages,
     totalCount,
     fetchPage,
-    isSearchMode,
     isFilterMode,
   } = usePokemonPagination({ limit, searchQuery, filters });
 

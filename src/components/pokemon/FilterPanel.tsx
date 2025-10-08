@@ -12,13 +12,11 @@ import {
   Select,
   MenuItem,
   Badge,
-  useTheme,
   Divider,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ClearIcon from '@mui/icons-material/Clear';
-import { useState } from 'react';
 import { GENERATIONS, SORT_OPTIONS } from '../../constants/filter.constants';
 import type { PokemonFilters } from '../../constants/filter.types';
 
