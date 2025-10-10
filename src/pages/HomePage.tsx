@@ -54,13 +54,7 @@ export function HomePage() {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Pokédex
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}
-          >
+
             Search and explore your favorite Pokémon from all generations.
             <Box
               component="span"
@@ -74,6 +68,7 @@ export function HomePage() {
             Click the microphone icon to search by voice!
             </Box>
           </Typography>
+          
           <SearchBar
             value={searchQuery}
             onChange={handleSearchChange}

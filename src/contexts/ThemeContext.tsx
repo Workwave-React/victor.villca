@@ -56,7 +56,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
               main: '#dc004e',
             },
             background: {
-              default: '#f5f5f5',
+              default: 'transparent',
               paper: '#ffffff',
             },
           }
@@ -68,7 +68,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
               main: '#f48fb1',
             },
             background: {
-              default: '#121212',
+              default: 'trasparent',
               paper: '#1e1e1e',
             },
           }),

@@ -1,90 +1,64 @@
 import { Routes, Route } from 'react-router-dom';
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Container } from '@mui/material';
-import { HomePage } from './pages/HomePage';
-import { PokemonDetailPage } from './pages/PokemonDetailPage';
+import { CssBaseline, AppBar, Toolbar, Typography, Container, Box } from '@mui/material';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
+import { HomePage } from './pages/HomePage';
+import { PokemonDetailPage } from './pages/PokemonDetailPage';
 import { ThemeToggle } from './components/ui/ThemeToggle';
 import { FavoritesBadge } from './components/ui/FavoritesBadge';
 import { useEffect } from 'react';
 
-function AppContent() {
+function useDynamicBackground() {
   useEffect(() => {
     const images = ['/pokemon1.jpg', '/pokemon2.jpg', '/pokemon3.jpeg'];
-    let index = 0;
+    let i = 0;
 
-    const apply = (i: number) => {
-      const isWide = window.innerWidth > window.innerHeight;
-      const theme = document.body.getAttribute('data-theme');
-      
-      document.body.style.backgroundImage = `url(${images[i]})`;
-      document.body.style.backgroundSize = isWide ? '100% auto' : 'cover';
-      document.body.style.backgroundPosition = 'center top';
-      document.body.style.backgroundRepeat = 'no-repeat';
-      document.body.style.transition = 'background-image 0.8s ease-in-out';
-      document.body.style.backgroundAttachment = 'fixed';
-      
-      const overlay = document.getElementById('bg-overlay');
-      if (overlay) {
-        overlay.style.backgroundColor = theme === 'dark' 
-          ? 'rgba(0,0,0,0.7)' 
-          : 'rgba(0,0,0,0.25)';
-      }
-    };
-
-    apply(index);
-
-    const id = setInterval(() => {
-      index = (index + 1) % images.length;
-      apply(index);
-    }, 10000);
-
-    const overlay = document.createElement('div');
-    overlay.id = 'bg-overlay';
-    overlay.style.position = 'fixed';
-    overlay.style.inset = '0';
-    overlay.style.zIndex = '-1';
-    overlay.style.transition = 'background-color 0.3s ease';
-    overlay.style.backgroundColor = 'rgba(0,0,0,0.25)';
+    const overlay = Object.assign(document.createElement('div'), {
+      id: 'bg-overlay',
+      style: `
+        position:fixed;inset:0;z-index:-1;
+        background:rgba(0,0,0,0.25);
+        transition:background-color .3s ease;
+      `,
+    });
     document.body.prepend(overlay);
 
-    const observer = new MutationObserver(() => {
-      const theme = document.body.getAttribute('data-theme');
-      if (overlay) {
-        overlay.style.backgroundColor = theme === 'dark' 
-          ? 'rgba(0,0,0,0.7)' 
-          : 'rgba(0,0,0,0.25)';
-      }
-    });
+    const apply = () => {
+      const theme = document.body.dataset.theme;
+      document.body.style.cssText = `
+        background:url(${images[i]}) center top/${window.innerWidth > window.innerHeight ? '100% auto' : 'cover'} no-repeat fixed;
+        transition:background-image .8s ease-in-out;
+      `;
+      overlay.style.backgroundColor = theme === 'dark' ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.25)';
+    };
 
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['data-theme'],
-    });
+    apply();
+    const id = setInterval(() => (i = (i + 1) % images.length, apply()), 10000);
+    const obs = new MutationObserver(apply);
+    obs.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
 
     return () => {
       clearInterval(id);
-      document.body.style.backgroundImage = '';
-      document.body.style.backgroundSize = '';
-      document.body.style.backgroundPosition = '';
-      document.body.style.backgroundRepeat = '';
-      document.body.style.transition = '';
-      document.body.style.backgroundAttachment = '';
+      obs.disconnect();
       overlay.remove();
-      observer.disconnect();
+      document.body.style.cssText = '';
     };
   }, []);
+}
+
+function AppContent() {
+  useDynamicBackground();
 
   return (
-    <Box sx={{ minHeight: '100vh', position: 'relative', zIndex: 0 }}>
+    <Box sx={{ minHeight: '100vh' }}>
       <AppBar position="sticky" color="default" elevation={2}>
         <Container maxWidth="xl">
           <Toolbar sx={{ justifyContent: 'space-between' }}>
-            <Typography variant="h6" component="div" sx={{ fontWeight: 700 }}>
-            Pokédex
-            </Typography>
-            <FavoritesBadge  />
-            <ThemeToggle />
+            <Typography variant="h6" fontWeight={700}>Pokédex</Typography>
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+              <FavoritesBadge />
+              <ThemeToggle />
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>
@@ -97,15 +71,13 @@ function AppContent() {
   );
 }
 
-function App() {
+export default function App() {
   return (
     <ThemeProvider>
       <FavoritesProvider>
-          <CssBaseline />
-          <AppContent />
+        <CssBaseline />
+        <AppContent />
       </FavoritesProvider>
     </ThemeProvider>
   );
 }
-
-export default App;
