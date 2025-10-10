@@ -3,7 +3,9 @@ import { CssBaseline, Box, AppBar, Toolbar, Typography, Container } from '@mui/m
 import { HomePage } from './pages/HomePage';
 import { PokemonDetailPage } from './pages/PokemonDetailPage';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { FavoritesProvider } from './contexts/FavoritesContext';
 import { ThemeToggle } from './components/ui/ThemeToggle';
+import { FavoritesBadge } from './components/ui/FavoritesBadge';
 import { useEffect } from 'react';
 
 function AppContent() {
@@ -76,9 +78,15 @@ function AppContent() {
   return (
     <Box sx={{ minHeight: '100vh', position: 'relative', zIndex: 0 }}>
       <AppBar position="sticky" color="default" elevation={2}>
-          <Toolbar sx={{ justifyContent: 'end' }}>
+        <Container maxWidth="xl">
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Typography variant="h6" component="div" sx={{ fontWeight: 700 }}>
+            Pokédex
+            </Typography>
+            <FavoritesBadge  />
             <ThemeToggle />
           </Toolbar>
+        </Container>
       </AppBar>
 
       <Routes>
@@ -92,8 +100,10 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <CssBaseline />
-      <AppContent />
+      <FavoritesProvider>
+          <CssBaseline />
+          <AppContent />
+      </FavoritesProvider>
     </ThemeProvider>
   );
 }
