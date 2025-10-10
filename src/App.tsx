@@ -1,24 +1,33 @@
 import { Routes, Route } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Container } from '@mui/material';
 import { HomePage } from './pages/HomePage';
 import { PokemonDetailPage } from './pages/PokemonDetailPage';
-import { theme } from './theme';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeToggle } from './components/ui/ThemeToggle';
 import { useEffect } from 'react';
 
-function App() {
+function AppContent() {
   useEffect(() => {
     const images = ['/pokemon1.jpg', '/pokemon2.jpg', '/pokemon3.jpeg'];
     let index = 0;
 
     const apply = (i: number) => {
       const isWide = window.innerWidth > window.innerHeight;
-
+      const theme = document.body.getAttribute('data-theme');
+      
       document.body.style.backgroundImage = `url(${images[i]})`;
       document.body.style.backgroundSize = isWide ? '100% auto' : 'cover';
       document.body.style.backgroundPosition = 'center top';
       document.body.style.backgroundRepeat = 'no-repeat';
       document.body.style.transition = 'background-image 0.8s ease-in-out';
       document.body.style.backgroundAttachment = 'fixed';
+      
+      const overlay = document.getElementById('bg-overlay');
+      if (overlay) {
+        overlay.style.backgroundColor = theme === 'dark' 
+          ? 'rgba(0,0,0,0.7)' 
+          : 'rgba(0,0,0,0.25)';
+      }
     };
 
     apply(index);
@@ -29,11 +38,27 @@ function App() {
     }, 10000);
 
     const overlay = document.createElement('div');
+    overlay.id = 'bg-overlay';
     overlay.style.position = 'fixed';
     overlay.style.inset = '0';
     overlay.style.zIndex = '-1';
+    overlay.style.transition = 'background-color 0.3s ease';
     overlay.style.backgroundColor = 'rgba(0,0,0,0.25)';
     document.body.prepend(overlay);
+
+    const observer = new MutationObserver(() => {
+      const theme = document.body.getAttribute('data-theme');
+      if (overlay) {
+        overlay.style.backgroundColor = theme === 'dark' 
+          ? 'rgba(0,0,0,0.7)' 
+          : 'rgba(0,0,0,0.25)';
+      }
+    });
+
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
 
     return () => {
       clearInterval(id);
@@ -44,24 +69,31 @@ function App() {
       document.body.style.transition = '';
       document.body.style.backgroundAttachment = '';
       overlay.remove();
+      observer.disconnect();
     };
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
+    <Box sx={{ minHeight: '100vh', position: 'relative', zIndex: 0 }}>
+      <AppBar position="sticky" color="default" elevation={2}>
+          <Toolbar sx={{ justifyContent: 'end' }}>
+            <ThemeToggle />
+          </Toolbar>
+      </AppBar>
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/pokemon/:name" element={<PokemonDetailPage />} />
+      </Routes>
+    </Box>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
       <CssBaseline />
-      <div
-        style={{
-          minHeight: '100vh',
-          position: 'relative',
-          zIndex: 0,
-        }}
-      >
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/pokemon/:name" element={<PokemonDetailPage />} />
-        </Routes>
-      </div>
+      <AppContent />
     </ThemeProvider>
   );
 }
